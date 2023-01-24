@@ -5,6 +5,7 @@ const RequestShema = new Schema({
   sender: { type: String, required: true },
   username: { type: String, required: true },
   date: { type: Number, required: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   chat: { type: Schema.Types.ObjectId, ref: 'Chat', required: true },
 });
 

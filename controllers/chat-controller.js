@@ -13,15 +13,15 @@ class ChatController {
 
   async createRequest(req, res, next) {
     try {
+      const user = req.user;
       const request = req.body;
-      const resp = await chatService.createRequest(request);
+      const resp = await chatService.createRequest(request, user);
       return res.json(resp);
     } catch (e) {
       next(e);
     }
   }
 
-  
   async createSender(req, res, next) {
     try {
       const sender = req.body;
@@ -36,7 +36,7 @@ class ChatController {
 
   async addMessage(req, res, next) {
     try {
-      const {id} = req.params
+      const { id } = req.params;
       const message = req.body;
       const resp = await chatService.addMessage(id, message);
       return res.json(resp);
@@ -44,7 +44,6 @@ class ChatController {
       next(e);
     }
   }
-
 
   async linkToAccount(req, res, next) {
     try {

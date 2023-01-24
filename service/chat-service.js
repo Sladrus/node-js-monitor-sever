@@ -24,8 +24,8 @@ class ChatService {
     return requests;
   }
 
-  async createRequest(request) {
-    const req = await requestModel.create(request);
+  async createRequest(request, userData) {
+    const req = await requestModel.create({ ...request, user: userData.id });
     console.log(req);
     const chat = await chatModel.findById(req.chat);
     chat.requests.push(req);
@@ -85,7 +85,6 @@ class ChatService {
 
   async unlinkFromAccount(id, userData) {
     const chat = await chatModel.findById(id);
-    console.log(chat);
     if (chat.user != userData.id) {
       throw ApiError.ForbiddenError();
     }
@@ -93,8 +92,10 @@ class ChatService {
     if (!account) {
       throw ApiError.BadRequest('Нет аккаунта с таким чатом');
     }
-    chat.account = undefined;
-    chat.save();
+    if (chat) {
+      chat.account = undefined;
+      chat.save();
+    }
 
     account.chat = undefined;
     account.save();
@@ -130,6 +131,7 @@ class ChatService {
 
   async deleteChat(id, userData) {
     const chat = await chatModel.findById(id);
+
     if (chat.user != userData.id) {
       throw ApiError.ForbiddenError();
     }
@@ -138,9 +140,9 @@ class ChatService {
       account.chat = undefined;
       account.save();
     }
+
     const resp = await chatModel.deleteOne({ _id: id });
     return resp;
   }
 }
-
 module.exports = new ChatService();
