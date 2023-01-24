@@ -65,8 +65,9 @@ class AccountService {
 
   async getAccounts() {
     const accounts = await accountModel.find();
-    // for (const account of accounts) {
+    // for (var account of accounts) {
     //   account.chat = undefined;
+    //   account.save();
     // }
     return accounts;
   }

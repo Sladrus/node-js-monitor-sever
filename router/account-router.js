@@ -6,7 +6,7 @@ const authMiddleware = require('../middleware/auth-middleware');
 
 router.post('/create', adminMiddlware, accountController.create);
 router.get('/:id', adminMiddlware, accountController.getOneAccount);
-router.get('/', adminMiddlware, accountController.getAccounts);
+router.get('/', authMiddleware, accountController.getAccounts);
 router.delete('/:id', authMiddleware, accountController.deleteAccount); //поправить на админку
 router.post('/link', authMiddleware, accountController.linkToUser);
 router.post('/unlink', authMiddleware, accountController.unlinkFromUser);

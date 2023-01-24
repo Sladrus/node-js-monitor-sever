@@ -56,19 +56,26 @@ class ChatService {
   }
 
   async linkToAccount(id, userData) {
-    const chat = await chatModel.findById(id);
+    console.log('START1 ' + id);
+    var chat = await chatModel.findById(id);
     if (chat.user != userData.id) {
       throw ApiError.ForbiddenError();
     }
     const account = await accountModel.findOne({ chat: id });
     if (account) {
+      console.log(account);
       return account;
     }
-    const emptyAccount = await accountModel.findOne({ chat: undefined });
+    console.log('START2 ' + id);
+
+    var emptyAccount = await accountModel.findOne({ chat: undefined });
     if (!emptyAccount) {
       throw ApiError.BadRequest('Нет свободных аккаунтов');
     }
-    chat.account = id;
+    console.log('START3 ' + id);
+
+    console.log(emptyAccount);
+    chat.account = emptyAccount._id;
     chat.save();
 
     emptyAccount.chat = id;
@@ -86,8 +93,12 @@ class ChatService {
     if (!account) {
       throw ApiError.BadRequest('Нет аккаунта с таким чатом');
     }
+    chat.account = undefined;
+    chat.save();
+
     account.chat = undefined;
     account.save();
+
     return account;
   }
 
@@ -103,7 +114,10 @@ class ChatService {
     const chats = await chatModel
       .find({ user: userData.id })
       .populate(['keys', 'account', 'requests', 'senders']);
-
+    // for (var chat of chats) {
+    //   chat.account = undefined;
+    //   chat.save();
+    // }
     return chats;
   }
 
@@ -118,6 +132,11 @@ class ChatService {
     const chat = await chatModel.findById(id);
     if (chat.user != userData.id) {
       throw ApiError.ForbiddenError();
+    }
+    const account = await accountModel.findOne({ chat: id });
+    if (account) {
+      account.chat = undefined;
+      account.save();
     }
     const resp = await chatModel.deleteOne({ _id: id });
     return resp;
