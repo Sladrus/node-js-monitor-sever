@@ -73,7 +73,7 @@ class AccountService {
   }
 
   async deleteOne(id) {
-    const account = await accountModel.deleteOne({ _id: id });
+    const account = await accountModel.findOneAndDelete({ _id: id });
     return account;
   }
 }
