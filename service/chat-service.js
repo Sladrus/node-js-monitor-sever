@@ -144,5 +144,22 @@ class ChatService {
     const resp = await chatModel.deleteOne({ _id: id });
     return resp;
   }
+
+  async deleteChats(body, userData) {
+    const chats = await chatModel.find({ _id: { $in: [...body] } });
+    for (const chat of chats) {
+      if (chat.user != userData.id) {
+        throw ApiError.ForbiddenError();
+      }
+      const account = await accountModel.findOne({ chat: chat.account });
+      if (account) {
+        account.chat = undefined;
+        account.save();
+      }
+    }
+
+    const resp = await chatModel.deleteMany({ _id: { $in: [...body] } });
+    return resp;
+  }
 }
 module.exports = new ChatService();

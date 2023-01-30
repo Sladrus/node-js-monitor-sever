@@ -108,6 +108,17 @@ class ChatController {
       next(e);
     }
   }
+
+  async deleteChats(req, res, next) {
+    try {
+      const user = req.user;
+      const body = req.body;
+      const resp = await chatService.deleteChats(body, user);
+      return res.json(resp);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 module.exports = new ChatController();

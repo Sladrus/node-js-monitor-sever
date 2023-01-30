@@ -11,8 +11,8 @@ router.get('/request', authMiddleware, chatController.getRequests);
 router.get('/:id', authMiddleware, chatController.getOneChat);
 router.get('/', authMiddleware, chatController.getChats);
 router.delete('/:id', authMiddleware, chatController.deleteChat);
+router.post('/delete', authMiddleware, chatController.deleteChats);
 router.post('/sender', authMiddleware, chatController.createSender);
 router.post('/message/:id', authMiddleware, chatController.addMessage);
-
 
 module.exports = router;
